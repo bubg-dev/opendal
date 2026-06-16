@@ -59,6 +59,11 @@ pub struct RedisConfig {
     pub db: i64,
     /// The default ttl for put operations.
     pub default_ttl: Option<Duration>,
+
+    /// allow insecure TLS connection by skipping cert validation.
+    ///
+    /// default false
+    pub insecure: bool,
 }
 
 impl Debug for RedisConfig {
@@ -70,6 +75,7 @@ impl Debug for RedisConfig {
             .field("root", &self.root)
             .field("db", &self.db)
             .field("default_ttl", &self.default_ttl)
+            .field("insecure", &self.insecure)
             .finish_non_exhaustive()
     }
 }
