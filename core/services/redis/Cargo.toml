@@ -47,6 +47,7 @@ redis = { version = "1.2", features = [
 ] }
 serde = { workspace = true, features = ["derive"] }
 tokio = { workspace = true, features = ["macros", "time"] }
+url.workspace = true
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }

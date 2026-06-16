@@ -28,6 +28,7 @@ use redis::IntoConnectionInfo;
 use redis::ProtocolVersion;
 use redis::RedisConnectionInfo;
 use redis::cluster::ClusterClientBuilder;
+use url::Url;
 
 use super::REDIS_SCHEME;
 use super::config::RedisConfig;
@@ -121,6 +122,14 @@ impl RedisBuilder {
             Some(root.to_string())
         };
 
+        self
+    }
+
+    /// allow insecure TLS connection by skipping cert validation.
+    ///
+    /// default false
+    pub fn insecure(mut self, insecure: bool) -> Self {
+        self.config.insecure = insecure;
         self
     }
 
@@ -225,10 +234,14 @@ impl RedisBuilder {
                     .map(|h| h.to_string())
                     .unwrap_or_else(|| "127.0.0.1".to_string());
                 let port = ep_url.port_u16().unwrap_or(DEFAULT_REDIS_PORT);
+                let frag = Url::parse(&ep_url.to_string())
+                    .ok()
+                    .and_then(|u| u.fragment().map(str::to_owned))
+                    .unwrap_or_default();
                 ConnectionAddr::TcpTls {
                     host,
                     port,
-                    insecure: false,
+                    insecure: frag == "insecure",
                     tls_params: None,
                 }
             }
